@@ -2,8 +2,6 @@
 
 A professional and clean FastAPI backend designed for multi-strategy quantitative portfolio optimization and risk factor exposure analysis.
 
-This project is hosted on GitHub: [github.com/uayushdubey/Finominal_Assignment](https://github.com/uayushdubey/Finominal_Assignment)
-
 ---
 
 ## Key Features
@@ -128,10 +126,11 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "assets": [
-    {"ticker": "AAPL", "weight": 25.0},
-    {"ticker": "MSFT", "weight": 25.0},
-    {"ticker": "GOOGL", "weight": 25.0},
-    {"ticker": "AMZN", "weight": 25.0}
+    {"ticker": "IEFA", "weight": 20.0},
+    {"ticker": "GLD", "weight": 20.0},
+    {"ticker": "AGG", "weight": 20.0},
+    {"ticker": "VEA", "weight": 20.0},
+    {"ticker": "SPY", "weight": 20.0}
   ],
   "constraints": {
     "min_weight": 10.0,
@@ -147,56 +146,63 @@ curl -X 'POST' \
 {
   "assets": [
     {
-      "ticker": "AAPL",
-      "name": "Apple Inc.",
-      "current_weight": 25.0,
-      "optimized_weight": 27.94,
-      "change": 2.94
+      "ticker": "IEFA",
+      "name": "iShares Core MSCI EAFE ETF",
+      "current_weight": 20.0,
+      "optimized_weight": 20.0,
+      "change": 0.0
     },
     {
-      "ticker": "MSFT",
-      "name": "Microsoft Corporation",
-      "current_weight": 25.0,
-      "optimized_weight": 33.56,
-      "change": 8.56
+      "ticker": "GLD",
+      "name": "SPDR Gold Shares",
+      "current_weight": 20.0,
+      "optimized_weight": 20.0,
+      "change": 0.0
     },
     {
-      "ticker": "GOOGL",
-      "name": "Alphabet Inc.",
-      "current_weight": 25.0,
-      "optimized_weight": 25.88,
-      "change": 0.88
+      "ticker": "AGG",
+      "name": "iShares Core US Aggregate Bond ETF",
+      "current_weight": 20.0,
+      "optimized_weight": 20.0,
+      "change": 0.0
     },
     {
-      "ticker": "AMZN",
-      "name": "Amazon.com Inc.",
-      "current_weight": 25.0,
-      "optimized_weight": 12.63,
-      "change": -12.37
+      "ticker": "VEA",
+      "name": "Vanguard Developed Markets Index Fund;ETF",
+      "current_weight": 20.0,
+      "optimized_weight": 20.0,
+      "change": 0.0
+    },
+    {
+      "ticker": "SPY",
+      "name": "State Street SPDR S&P 500 ETF Trust",
+      "current_weight": 20.0,
+      "optimized_weight": 20.0,
+      "change": 0.0
     }
   ],
   "metrics": {
-    "expected_return": 0.0381,
-    "expected_volatility": 0.0175,
-    "sharpe_ratio": 2.1757
+    "expected_return": 0.0244,
+    "expected_volatility": 0.0118,
+    "sharpe_ratio": 2.0727
   },
   "factor_exposure": {
-    "alpha": 0.0465,
-    "beta_momentum": -0.1729,
-    "beta_value": -1.1546,
-    "beta_size": -4.9748,
-    "r_squared": 0.7351,
+    "alpha": 0.0246,
+    "beta_momentum": 0.6694,
+    "beta_value": -0.3221,
+    "beta_size": -3.6536,
+    "r_squared": 0.6197,
     "t_stats": {
-      "const": 3.3452,
-      "momentum": -0.1306,
-      "value": -1.0592,
-      "size": -2.942
+      "const": 2.2047,
+      "momentum": 0.6287,
+      "value": -0.3674,
+      "size": -2.6863
     },
     "p_values": {
-      "const": 0.0155,
-      "momentum": 0.9004,
-      "value": 0.3303,
-      "size": 0.0259
+      "const": 0.0697,
+      "momentum": 0.5527,
+      "value": 0.726,
+      "size": 0.0362
     }
   }
 }
