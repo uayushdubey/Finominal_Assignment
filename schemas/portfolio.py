@@ -125,7 +125,13 @@ class OptimizationRequest(BaseModel):
             raise ValueError(str(e))
 
     @model_validator(mode="after")
-    def validate_feasibility(self) -> "OptimizationRequest":
+    def validate_request(self) -> "OptimizationRequest":
+        weights = [asset.weight for asset in self.assets]
+        try:
+            validate_weights(weights, enforce_sum=True)
+        except Exception as e:
+            raise ValueError(str(e))
+
         if self.constraints:
             n_assets = len(self.assets)
             min_possible = self.constraints.min_weight * n_assets

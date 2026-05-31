@@ -132,3 +132,19 @@ def test_api_strategy_typo_fuzzy_match_suggestion(api_client):
     assert strategy_error["did_you_mean"] == "min_volatility"
     assert strategy_error["input"] == "min_volatilty"
     assert "min_volatility" in strategy_error["supported_strategies"]
+
+def test_api_weights_sum_validation(api_client):
+    payload = {
+        "assets": [
+            {"ticker": "SPY", "weight": 80.0},
+            {"ticker": "AGG", "weight": 30.0}
+        ],
+        "strategy": "risk_parity"
+    }
+    response = api_client.post("/api/v1/optimize", json=payload)
+    assert response.status_code == 422
+    data = response.json()
+    assert data["success"] is False
+    assert data["error"]["code"] == "ValidationError"
+    # The message should mention weights sum to 100%
+    assert any("100%" in err["message"] for err in data["error"]["details"]["errors"])
