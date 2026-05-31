@@ -14,12 +14,12 @@ def test_repository_get_factor_data(repository):
     assert list(factors.columns) == ["momentum", "value", "size"]
 
 def test_repository_get_dividend_yield_success(repository):
-    tickers = ["AAPL", "MSFT", "GOOGL"]
+    tickers = ["IEFA", "GLD", "AGG"]
     yields = repository.get_dividend_yield(tickers)
     assert isinstance(yields, dict)
     assert len(yields) == 3
-    assert yields["AAPL"] == 0.52
-    assert yields["MSFT"] == 0.71
+    assert yields["IEFA"] == 3.28
+    assert yields["AGG"] == 3.97
 
 def test_repository_get_dividend_yield_failures(repository):
     # Empty tickers list
@@ -27,10 +27,10 @@ def test_repository_get_dividend_yield_failures(repository):
         repository.get_dividend_yield([])
     # Non-existent ticker
     with pytest.raises(NotFoundException):
-        repository.get_dividend_yield(["AAPL", "NON_EXISTENT"])
+        repository.get_dividend_yield(["IEFA", "NON_EXISTENT"])
 
 def test_repository_get_returns_success(repository):
-    tickers = ["AAPL", "MSFT", "GOOGL"]
+    tickers = ["IEFA", "GLD", "AGG"]
     returns = repository.get_returns(tickers)
     assert isinstance(returns, pd.DataFrame)
     assert not returns.empty
@@ -47,4 +47,4 @@ def test_repository_get_returns_failures(repository):
         repository.get_returns([])
     # Non-existent ticker
     with pytest.raises(NotFoundException):
-        repository.get_returns(["AAPL", "NON_EXISTENT"])
+        repository.get_returns(["IEFA", "NON_EXISTENT"])

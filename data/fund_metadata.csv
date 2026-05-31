@@ -1,7 +1,6 @@
 ticker,name,dividend_yield
-AAPL,Apple Inc.,0.52
-MSFT,Microsoft Corporation,0.71
-GOOGL,Alphabet Inc.,0.45
-AMZN,Amazon.com Inc.,0.00
-VEA,Vanguard FTSE Developed Markets ETF,3.10
-AGG,iShares Core U.S. Aggregate Bond ETF,4.20
+IEFA,iShares Core MSCI EAFE ETF,3.28
+GLD,SPDR Gold Shares,0.0
+AGG,iShares Core US Aggregate Bond ETF,3.97
+VEA,"Vanguard Developed Markets Index Fund;ETF",2.03
+SPY,State Street SPDR S&P 500 ETF Trust,0.99

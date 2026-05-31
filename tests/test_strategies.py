@@ -8,7 +8,7 @@ from core.exceptions import StrategyNotSupportedException, ConstraintViolationEx
 @pytest.fixture(scope="module")
 def returns_data():
     repo = DataRepository()
-    return repo.get_returns(["AAPL", "MSFT", "GOOGL", "AMZN"])
+    return repo.get_returns(["IEFA", "GLD", "AGG", "VEA", "SPY"])
 
 def test_strategy_factory_lookup():
     eq = StrategyFactory.get_strategy("equal_weight")
@@ -21,20 +21,20 @@ def test_strategy_factory_lookup():
         StrategyFactory.get_strategy("quantum_optimizer")
 
 def test_equal_weight_strategy(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
     portfolio = Portfolio(securities=securities)
     
     strategy = StrategyFactory.get_strategy("equal_weight")
     res = strategy.optimize(portfolio, returns_data)
     
-    assert len(res.optimized_weights) == 4
+    assert len(res.optimized_weights) == 5
     for t in tickers:
-        assert abs(res.optimized_weights[t] - 25.0) < 1e-4
+        assert abs(res.optimized_weights[t] - 20.0) < 1e-4
     assert abs(sum(res.optimized_weights.values()) - 100.0) < 1e-4
 
 def test_min_volatility_strategy(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
     portfolio = Portfolio(securities=securities)
     
@@ -45,7 +45,7 @@ def test_min_volatility_strategy(returns_data):
     assert res.expected_volatility > 0.0
 
 def test_max_sharpe_strategy(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
     portfolio = Portfolio(securities=securities)
     
@@ -56,7 +56,7 @@ def test_max_sharpe_strategy(returns_data):
     assert res.sharpe_ratio > 0.0
 
 def test_risk_parity_strategy(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
     portfolio = Portfolio(securities=securities)
     
@@ -66,7 +66,7 @@ def test_risk_parity_strategy(returns_data):
     assert abs(sum(res.optimized_weights.values()) - 100.0) < 1e-4
 
 def test_min_drawdown_strategy(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
     portfolio = Portfolio(securities=securities)
     
@@ -76,7 +76,7 @@ def test_min_drawdown_strategy(returns_data):
     assert abs(sum(res.optimized_weights.values()) - 100.0) < 1e-4
 
 def test_strategy_bounds_constraints(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
     # Restrict weights between 15% and 40%
     constraints = Constraints(min_weight=15.0, max_weight=40.0)
@@ -92,10 +92,10 @@ def test_strategy_bounds_constraints(returns_data):
             assert w <= 40.0 + 1e-4
 
 def test_infeasible_dividend_yield_constraint(returns_data):
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN"]
+    tickers = ["IEFA", "GLD", "AGG", "VEA", "SPY"]
     securities = [Security(t, 0.0) for t in tickers]
-    # Set impossible dividend yield (max available in dataset is 0.71%)
-    constraints = Constraints(min_weight=10.0, max_weight=50.0, min_dividend_yield=2.0)
+    # Set impossible dividend yield (max available in dataset is 3.97%)
+    constraints = Constraints(min_weight=10.0, max_weight=50.0, min_dividend_yield=5.0)
     portfolio = Portfolio(securities=securities, constraints=constraints)
     
     strategy = StrategyFactory.get_strategy("min_volatility")

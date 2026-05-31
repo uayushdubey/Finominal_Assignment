@@ -87,10 +87,10 @@ def test_portfolio_metrics_vectorization():
 def test_risk_parity_zero_volatility_safety():
     # Mock return history with 300 identical rows so no small-dataset regularization is triggered
     returns_df = pd.DataFrame({
-        "AAPL": np.zeros(300),
-        "MSFT": np.zeros(300)
+        "IEFA": np.zeros(300),
+        "GLD": np.zeros(300)
     })
-    portfolio = Portfolio(securities=[Security("AAPL", 50.0), Security("MSFT", 50.0)])
+    portfolio = Portfolio(securities=[Security("IEFA", 50.0), Security("GLD", 50.0)])
     strategy = StrategyFactory.get_strategy("risk_parity")
     
     with pytest.raises(ValueError, match="Portfolio volatility is zero. Optimization is unstable."):
@@ -98,16 +98,16 @@ def test_risk_parity_zero_volatility_safety():
 
 def test_post_optimization_dividend_constraint(tmp_path):
     # Mock data repo and service pipeline to test constraint infeasibility check post-optimization
-    # Let's create returns where MSFT and AAPL returns are equal but metadata forces target minimum yield high
+    # Let's create returns where GLD and IEFA returns are equal but metadata forces target minimum yield high
     price_data = {
         "date": ["2026-05-01", "2026-05-02", "2026-05-03"],
-        "AAPL": [100.0, 101.0, 102.0],
-        "MSFT": [100.0, 101.0, 102.0]
+        "IEFA": [100.0, 101.0, 102.0],
+        "GLD": [100.0, 101.0, 102.0]
     }
     metadata = {
-        "ticker": ["AAPL", "MSFT"],
-        "name": ["Apple", "Microsoft"],
-        "dividend_yield": [0.1, 0.2]  # Max dividend yield achievable is 0.2
+        "ticker": ["IEFA", "GLD"],
+        "name": ["iShares EAFE", "Gold Shares"],
+        "dividend_yield": [3.28, 0.0]  # Matches real file yields
     }
     factors = {
         "date": ["2026-05-02", "2026-05-03"],
@@ -121,15 +121,15 @@ def test_post_optimization_dividend_constraint(tmp_path):
     pd.DataFrame(factors).to_csv(tmp_path / "factor_returns.csv", index=False)
     
     repo = DataRepository(data_dir=str(tmp_path))
-    returns_data = repo.get_returns(["AAPL", "MSFT"])
+    returns_data = repo.get_returns(["IEFA", "GLD"])
     
     portfolio = Portfolio(
-        securities=[Security("AAPL", 50.0), Security("MSFT", 50.0)],
-        # Expecting at least 1.5% dividend yield, which is impossible (since max is 0.2%)
-        constraints=Constraints(min_weight=0.0, max_weight=100.0, min_dividend_yield=1.5)
+        securities=[Security("IEFA", 50.0), Security("GLD", 50.0)],
+        # Expecting at least 5.0% dividend yield, which is impossible (since max is 3.28%)
+        constraints=Constraints(min_weight=0.0, max_weight=100.0, min_dividend_yield=5.0)
     )
     
     strategy = StrategyFactory.get_strategy("min_volatility")
     # Pre-optimization constraint audit or post-optimization audit should catch this and raise ConstraintViolationException
     with pytest.raises(ConstraintViolationException):
-        strategy.optimize(portfolio, returns_data)
+         strategy.optimize(portfolio, returns_data)

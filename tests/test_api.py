@@ -10,15 +10,16 @@ def test_api_health(api_client):
 def test_api_optimize_success(api_client):
     payload = {
         "assets": [
-            {"ticker": "AAPL", "weight": 25.0},
-            {"ticker": "MSFT", "weight": 25.0},
-            {"ticker": "GOOGL", "weight": 25.0},
-            {"ticker": "AMZN", "weight": 25.0}
+            {"ticker": "IEFA", "weight": 20.0},
+            {"ticker": "GLD", "weight": 20.0},
+            {"ticker": "AGG", "weight": 20.0},
+            {"ticker": "VEA", "weight": 20.0},
+            {"ticker": "SPY", "weight": 20.0}
         ],
         "constraints": {
             "min_weight": 10.0,
             "max_weight": 50.0,
-            "min_dividend_yield": 0.3
+            "min_dividend_yield": 0.5
         },
         "strategy": "min_volatility"
     }
@@ -32,9 +33,9 @@ def test_api_optimize_success(api_client):
     assert "factor_exposure" in data
     
     assets = {a["ticker"]: a for a in data["assets"]}
-    assert len(assets) == 4
-    assert assets["MSFT"]["name"] == "Microsoft Corporation"
-    assert assets["AAPL"]["current_weight"] == 25.0
+    assert len(assets) == 5
+    assert assets["IEFA"]["name"] == "iShares Core MSCI EAFE ETF"
+    assert assets["IEFA"]["current_weight"] == 20.0
     
     # Assert change math
     for ticker, asset in assets.items():
@@ -44,8 +45,8 @@ def test_api_optimize_success(api_client):
 def test_api_validation_negative_weight(api_client):
     payload = {
         "assets": [
-            {"ticker": "AAPL", "weight": -10.0},
-            {"ticker": "MSFT", "weight": 110.0}
+            {"ticker": "IEFA", "weight": -10.0},
+            {"ticker": "GLD", "weight": 110.0}
         ],
         "strategy": "min_volatility"
     }
@@ -59,15 +60,16 @@ def test_api_validation_negative_weight(api_client):
 def test_api_infeasible_yield_failure(api_client):
     payload = {
         "assets": [
-            {"ticker": "AAPL", "weight": 25.0},
-            {"ticker": "MSFT", "weight": 25.0},
-            {"ticker": "GOOGL", "weight": 25.0},
-            {"ticker": "AMZN", "weight": 25.0}
+            {"ticker": "IEFA", "weight": 20.0},
+            {"ticker": "GLD", "weight": 20.0},
+            {"ticker": "AGG", "weight": 20.0},
+            {"ticker": "VEA", "weight": 20.0},
+            {"ticker": "SPY", "weight": 20.0}
         ],
         "constraints": {
             "min_weight": 10.0,
             "max_weight": 50.0,
-            "min_dividend_yield": 3.0  # Mathematically impossible
+            "min_dividend_yield": 5.0  # Mathematically impossible
         },
         "strategy": "min_volatility"
     }
@@ -81,8 +83,8 @@ def test_api_infeasible_yield_failure(api_client):
 def test_api_unsupported_strategy_failure(api_client):
     payload = {
         "assets": [
-            {"ticker": "AAPL", "weight": 50.0},
-            {"ticker": "MSFT", "weight": 50.0}
+            {"ticker": "IEFA", "weight": 50.0},
+            {"ticker": "GLD", "weight": 50.0}
         ],
         "strategy": "custom_unsupported_optimizer"
     }
@@ -96,8 +98,8 @@ def test_api_unsupported_strategy_failure(api_client):
 def test_api_strategy_normalization_success(api_client):
     payload = {
         "assets": [
-            {"ticker": "AAPL", "weight": 50.0},
-            {"ticker": "MSFT", "weight": 50.0}
+            {"ticker": "IEFA", "weight": 50.0},
+            {"ticker": "GLD", "weight": 50.0}
         ],
         "strategy": "Maximize_Sharpe"
     }
@@ -111,8 +113,8 @@ def test_api_strategy_normalization_success(api_client):
 def test_api_strategy_typo_fuzzy_match_suggestion(api_client):
     payload = {
         "assets": [
-            {"ticker": "AAPL", "weight": 50.0},
-            {"ticker": "MSFT", "weight": 50.0}
+            {"ticker": "IEFA", "weight": 50.0},
+            {"ticker": "GLD", "weight": 50.0}
         ],
         "strategy": "min_volatilty"  # Typo: missing 'i'
     }
