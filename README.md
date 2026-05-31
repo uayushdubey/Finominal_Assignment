@@ -233,6 +233,8 @@ Below are common testing scenarios demonstrating the optimizer behavior across d
   "strategy": "risk_parity"
 }
 ```
+Output:
+<img width="1870" height="617" alt="image" src="https://github.com/user-attachments/assets/caa07b46-5af6-419e-a8f9-1ec092efcb54" />
 
 Expected:
 * AGG and VEA weights increase.
@@ -257,6 +259,11 @@ Expected:
 }
 ```
 
+Output:
+
+<img width="1886" height="744" alt="image" src="https://github.com/user-attachments/assets/dd1aa5e5-01d3-44b7-b366-071bca5b3791" />
+
+
 Expected:
 * Better performing assets receive more weight.
 * Weight distribution is not equal.
@@ -277,33 +284,15 @@ Expected:
   "strategy": "min_volatility"
 }
 ```
+Output:
+
+<img width="1870" height="725" alt="image" src="https://github.com/user-attachments/assets/206ba7e8-981f-4a6c-9ab1-69aaec6dccef" />
+
 
 Expected:
 * AGG weight increases (low risk asset).
 * SPY weight decreases.
 
-### 4. Constraint Stress Test
-
-```json
-{
-  "assets": [
-    {"ticker": "AAPL", "weight": 25.0},
-    {"ticker": "MSFT", "weight": 25.0},
-    {"ticker": "VEA", "weight": 25.0},
-    {"ticker": "AGG", "weight": 25.0}
-  ],
-  "constraints": {
-    "min_weight": 20.0,
-    "max_weight": 40.0,
-    "min_dividend_yield": 2.5
-  },
-  "strategy": "max_sharpe"
-}
-```
-
-Expected:
-* VEA and AGG dominate (high dividend yield).
-* AAPL and MSFT weights are reduced.
 
 ### 5. Bonus (Error Test)
 
@@ -316,6 +305,10 @@ Expected:
   "strategy": "risk_parity"
 }
 ```
+
+Output:
+<img width="1865" height="473" alt="image" src="https://github.com/user-attachments/assets/9f6cfd2d-d529-45a6-bdf4-520dbf953ffd" />
+
 
 Expected:
 * Triggers validation or constraint error due to invalid weights (e.g. sum of initial weights is not equal to 100% or fails validation).
