@@ -207,3 +207,116 @@ curl -X 'POST' \
   }
 }
 ```
+
+---
+
+## Example Scenarios
+
+Below are common testing scenarios demonstrating the optimizer behavior across different strategies and constraints.
+
+### 1. Risk Parity (Base Case)
+
+```json
+{
+  "assets": [
+    {"ticker": "IEFA", "weight": 20.0},
+    {"ticker": "GLD", "weight": 20.0},
+    {"ticker": "AGG", "weight": 20.0},
+    {"ticker": "VEA", "weight": 20.0},
+    {"ticker": "SPY", "weight": 20.0}
+  ],
+  "constraints": {
+    "min_weight": 10.0,
+    "max_weight": 50.0,
+    "min_dividend_yield": 0.5
+  },
+  "strategy": "risk_parity"
+}
+```
+
+Expected:
+* AGG and VEA weights increase.
+* Risk is balanced across assets.
+
+### 2. Max Sharpe (High Value Test)
+
+```json
+{
+  "assets": [
+    {"ticker": "IEFA", "weight": 20.0},
+    {"ticker": "GLD", "weight": 20.0},
+    {"ticker": "AGG", "weight": 20.0},
+    {"ticker": "VEA", "weight": 20.0},
+    {"ticker": "SPY", "weight": 20.0}
+  ],
+  "constraints": {
+    "min_weight": 5.0,
+    "max_weight": 50.0
+  },
+  "strategy": "max_sharpe"
+}
+```
+
+Expected:
+* Better performing assets receive more weight.
+* Weight distribution is not equal.
+
+### 3. Minimize Volatility (Safe Portfolio)
+
+```json
+{
+  "assets": [
+    {"ticker": "SPY", "weight": 50.0},
+    {"ticker": "AGG", "weight": 30.0},
+    {"ticker": "GLD", "weight": 20.0}
+  ],
+  "constraints": {
+    "min_weight": 0.0,
+    "max_weight": 70.0
+  },
+  "strategy": "min_volatility"
+}
+```
+
+Expected:
+* AGG weight increases (low risk asset).
+* SPY weight decreases.
+
+### 4. Constraint Stress Test
+
+```json
+{
+  "assets": [
+    {"ticker": "AAPL", "weight": 25.0},
+    {"ticker": "MSFT", "weight": 25.0},
+    {"ticker": "VEA", "weight": 25.0},
+    {"ticker": "AGG", "weight": 25.0}
+  ],
+  "constraints": {
+    "min_weight": 20.0,
+    "max_weight": 40.0,
+    "min_dividend_yield": 2.5
+  },
+  "strategy": "max_sharpe"
+}
+```
+
+Expected:
+* VEA and AGG dominate (high dividend yield).
+* AAPL and MSFT weights are reduced.
+
+### 5. Bonus (Error Test)
+
+```json
+{
+  "assets": [
+    {"ticker": "SPY", "weight": 80.0},
+    {"ticker": "AGG", "weight": 30.0}
+  ],
+  "strategy": "risk_parity"
+}
+```
+
+Expected:
+* Triggers validation or constraint error due to invalid weights (e.g. sum of initial weights is not equal to 100% or fails validation).
+
